@@ -2,13 +2,19 @@ import tailwindCssAnimate from 'tailwindcss-animate'
 import defaultTheme from 'tailwindcss/defaultTheme'
 import { fonts } from './src/config/fonts'
 
+const { heroui } = require('@heroui/theme')
+
 // Use destructuring with fallback to ensure fontFamily is defined
 const { fontFamily = { sans: ['sans-serif'] } } = defaultTheme || {}
 
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ['class'],
-  content: ['./index.html', './src/**/*.{ts,tsx,js,jsx}'],
+  content: [
+    './index.html',
+    './src/**/*.{ts,tsx,js,jsx}',
+    './node_modules/@heroui/theme/dist/components/(radio|form).js',
+  ],
   safelist: fonts.map((font) => `font-${font}`),
   theme: {
     container: {
@@ -82,5 +88,5 @@ export default {
       },
     },
   },
-  plugins: [tailwindCssAnimate],
+  plugins: [tailwindCssAnimate, heroui()],
 }

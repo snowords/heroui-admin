@@ -14,7 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { RadioGroup, Radio } from '@heroui/react'
 import { Switch } from '@/components/ui/switch'
 
 const notificationsFormSchema = z.object({
@@ -72,7 +72,7 @@ export function NotificationsForm() {
                 >
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
-                      <RadioGroupItem value='all' />
+                      <Radio value='all' />
                     </FormControl>
                     <FormLabel className='font-normal'>
                       All new messages
@@ -80,7 +80,7 @@ export function NotificationsForm() {
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
-                      <RadioGroupItem value='mentions' />
+                      <Radio value='mentions' />
                     </FormControl>
                     <FormLabel className='font-normal'>
                       Direct messages and mentions
@@ -88,7 +88,7 @@ export function NotificationsForm() {
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
-                      <RadioGroupItem value='none' />
+                      <Radio value='none' />
                     </FormControl>
                     <FormLabel className='font-normal'>Nothing</FormLabel>
                   </FormItem>

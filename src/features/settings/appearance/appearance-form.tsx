@@ -1,13 +1,11 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
-import { ChevronDownIcon } from '@radix-ui/react-icons'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { fonts } from '@/config/fonts'
-import { cn } from '@/lib/utils'
 import { useFont } from '@/context/font-context'
 import { useTheme } from '@/context/theme-context'
 import { toast } from '@/hooks/use-toast'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -17,7 +15,15 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Radio, RadioGroup } from '@heroui/react'
+import { cn } from '@/lib/utils'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 const appearanceFormSchema = z.object({
   theme: z.enum(['light', 'dark'], {
@@ -30,6 +36,45 @@ const appearanceFormSchema = z.object({
 })
 
 type AppearanceFormValues = z.infer<typeof appearanceFormSchema>
+
+interface ThemeRadioProps {
+  children: React.ReactNode;
+  preview: React.ReactNode;
+  value: string;
+  defaultValue: string;
+  id: string;
+  [key: string]: any;
+}
+
+const ThemeRadio = (props: ThemeRadioProps) => {
+  const { children, preview, value, defaultValue, id, ...otherProps } = props;
+  const isSelected = defaultValue === value;
+
+  return (
+    <div className="relative">
+      <Radio
+        {...otherProps}
+        value={value}
+        id={id}
+        className="sr-only left-10 -z-10"
+      />
+      <label 
+        htmlFor={id} 
+        className="cursor-pointer inline-flex flex-col items-center"
+      >
+        <div className={cn(
+          'items-center rounded-md border-2 p-1',
+          isSelected ? 'border-primary' : 'border-muted'
+        )}>
+          {preview}
+        </div>
+        <span className='block w-full p-2 text-center font-normal'>
+          {children}
+        </span>
+      </label>
+    </div>
+  );
+};
 
 export function AppearanceForm() {
   const { font, setFont } = useFont()
@@ -69,24 +114,18 @@ export function AppearanceForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Font</FormLabel>
-              <div className='relative w-max'>
-                <FormControl>
-                  <select
-                    className={cn(
-                      buttonVariants({ variant: 'outline' }),
-                      'w-[200px] appearance-none font-normal capitalize'
-                    )}
-                    {...field}
-                  >
+              <FormControl>
+                <Select defaultValue={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="选择字体" />
+                  </SelectTrigger>
+                  <SelectContent>
                     {fonts.map((font) => (
-                      <option key={font} value={font}>
-                        {font}
-                      </option>
+                      <SelectItem key={font} value={font}>{font}</SelectItem>
                     ))}
-                  </select>
-                </FormControl>
-                <ChevronDownIcon className='absolute right-3 top-2.5 h-4 w-4 opacity-50' />
-              </div>
+                  </SelectContent>
+                </Select>
+              </FormControl>
               <FormDescription className='font-manrope'>
                 Set the font you want to use in the dashboard.
               </FormDescription>
@@ -105,62 +144,57 @@ export function AppearanceForm() {
               </FormDescription>
               <FormMessage />
               <RadioGroup
+                orientation="horizontal"
                 onValueChange={field.onChange}
                 defaultValue={field.value}
-                className='grid max-w-md grid-cols-2 gap-8 pt-2'
+                className='flex space-x-16 pt-2'
               >
-                <FormItem>
-                  <FormLabel className='[&:has([data-state=checked])>div]:border-primary'>
-                    <FormControl>
-                      <RadioGroupItem value='light' className='sr-only' />
-                    </FormControl>
-                    <div className='items-center rounded-md border-2 border-muted p-1 hover:border-accent'>
-                      <div className='space-y-2 rounded-sm bg-[#ecedef] p-2'>
-                        <div className='space-y-2 rounded-md bg-white p-2 shadow-sm'>
-                          <div className='h-2 w-[80px] rounded-lg bg-[#ecedef]' />
-                          <div className='h-2 w-[100px] rounded-lg bg-[#ecedef]' />
-                        </div>
-                        <div className='flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm'>
-                          <div className='h-4 w-4 rounded-full bg-[#ecedef]' />
-                          <div className='h-2 w-[100px] rounded-lg bg-[#ecedef]' />
-                        </div>
-                        <div className='flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm'>
-                          <div className='h-4 w-4 rounded-full bg-[#ecedef]' />
-                          <div className='h-2 w-[100px] rounded-lg bg-[#ecedef]' />
-                        </div>
+                <ThemeRadio 
+                  defaultValue={field.value}
+                  value='light'
+                  id="light"
+                  preview={
+                    <div className='space-y-2 rounded-sm bg-[#ecedef] p-2'>
+                      <div className='space-y-2 rounded-md bg-white p-2 shadow-sm'>
+                        <div className='h-2 w-[80px] rounded-lg bg-[#ecedef]' />
+                        <div className='h-2 w-[100px] rounded-lg bg-[#ecedef]' />
+                      </div>
+                      <div className='flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm'>
+                        <div className='h-4 w-4 rounded-full bg-[#ecedef]' />
+                        <div className='h-2 w-[100px] rounded-lg bg-[#ecedef]' />
+                      </div>
+                      <div className='flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm'>
+                        <div className='h-4 w-4 rounded-full bg-[#ecedef]' />
+                        <div className='h-2 w-[100px] rounded-lg bg-[#ecedef]' />
                       </div>
                     </div>
-                    <span className='block w-full p-2 text-center font-normal'>
-                      Light
-                    </span>
-                  </FormLabel>
-                </FormItem>
-                <FormItem>
-                  <FormLabel className='[&:has([data-state=checked])>div]:border-primary'>
-                    <FormControl>
-                      <RadioGroupItem value='dark' className='sr-only' />
-                    </FormControl>
-                    <div className='items-center rounded-md border-2 border-muted bg-popover p-1 hover:bg-accent hover:text-accent-foreground'>
-                      <div className='space-y-2 rounded-sm bg-slate-950 p-2'>
-                        <div className='space-y-2 rounded-md bg-slate-800 p-2 shadow-sm'>
-                          <div className='h-2 w-[80px] rounded-lg bg-slate-400' />
-                          <div className='h-2 w-[100px] rounded-lg bg-slate-400' />
-                        </div>
-                        <div className='flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm'>
-                          <div className='h-4 w-4 rounded-full bg-slate-400' />
-                          <div className='h-2 w-[100px] rounded-lg bg-slate-400' />
-                        </div>
-                        <div className='flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm'>
-                          <div className='h-4 w-4 rounded-full bg-slate-400' />
-                          <div className='h-2 w-[100px] rounded-lg bg-slate-400' />
-                        </div>
+                  }
+                >
+                  Light
+                </ThemeRadio>
+                <ThemeRadio 
+                  defaultValue={field.value}
+                  value='dark'
+                  id="dark"
+                  preview={
+                    <div className='space-y-2 rounded-sm bg-slate-950 p-2'>
+                      <div className='space-y-2 rounded-md bg-slate-800 p-2 shadow-sm'>
+                        <div className='h-2 w-[80px] rounded-lg bg-slate-400' />
+                        <div className='h-2 w-[100px] rounded-lg bg-slate-400' />
+                      </div>
+                      <div className='flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm'>
+                        <div className='h-4 w-4 rounded-full bg-slate-400' />
+                        <div className='h-2 w-[100px] rounded-lg bg-slate-400' />
+                      </div>
+                      <div className='flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm'>
+                        <div className='h-4 w-4 rounded-full bg-slate-400' />
+                        <div className='h-2 w-[100px] rounded-lg bg-slate-400' />
                       </div>
                     </div>
-                    <span className='block w-full p-2 text-center font-normal'>
-                      Dark
-                    </span>
-                  </FormLabel>
-                </FormItem>
+                  }
+                >
+                  Dark
+                </ThemeRadio>
               </RadioGroup>
             </FormItem>
           )}

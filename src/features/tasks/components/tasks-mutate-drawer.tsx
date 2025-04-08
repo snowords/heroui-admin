@@ -12,7 +12,8 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { RadioGroup, Radio } from '@heroui/react'
+
 import {
   Sheet,
   SheetClose,
@@ -139,7 +140,7 @@ export function TasksMutateDrawer({ open, onOpenChange, currentRow }: Props) {
                     >
                       <FormItem className='flex items-center space-x-3 space-y-0'>
                         <FormControl>
-                          <RadioGroupItem value='documentation' />
+                          <Radio value='documentation' />
                         </FormControl>
                         <FormLabel className='font-normal'>
                           Documentation
@@ -147,13 +148,13 @@ export function TasksMutateDrawer({ open, onOpenChange, currentRow }: Props) {
                       </FormItem>
                       <FormItem className='flex items-center space-x-3 space-y-0'>
                         <FormControl>
-                          <RadioGroupItem value='feature' />
+                          <Radio value='feature' />
                         </FormControl>
                         <FormLabel className='font-normal'>Feature</FormLabel>
                       </FormItem>
                       <FormItem className='flex items-center space-x-3 space-y-0'>
                         <FormControl>
-                          <RadioGroupItem value='bug' />
+                          <Radio value='bug' />
                         </FormControl>
                         <FormLabel className='font-normal'>Bug</FormLabel>
                       </FormItem>
@@ -177,19 +178,19 @@ export function TasksMutateDrawer({ open, onOpenChange, currentRow }: Props) {
                     >
                       <FormItem className='flex items-center space-x-3 space-y-0'>
                         <FormControl>
-                          <RadioGroupItem value='high' />
+                          <Radio value='high' />
                         </FormControl>
                         <FormLabel className='font-normal'>High</FormLabel>
                       </FormItem>
                       <FormItem className='flex items-center space-x-3 space-y-0'>
                         <FormControl>
-                          <RadioGroupItem value='medium' />
+                          <Radio value='medium' />
                         </FormControl>
                         <FormLabel className='font-normal'>Medium</FormLabel>
                       </FormItem>
                       <FormItem className='flex items-center space-x-3 space-y-0'>
                         <FormControl>
-                          <RadioGroupItem value='low' />
+                          <Radio value='low' />
                         </FormControl>
                         <FormLabel className='font-normal'>Low</FormLabel>
                       </FormItem>
