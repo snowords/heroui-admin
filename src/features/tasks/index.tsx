@@ -7,12 +7,19 @@ import { columns } from './components/columns'
 import { DataTable } from './components/data-table'
 import { TasksDialogs } from './components/tasks-dialogs'
 import { TasksPrimaryButtons } from './components/tasks-primary-buttons'
-import TasksProvider from './context/tasks-context'
-import { tasks } from './data/tasks'
+import TasksProvider, { useTasks } from './context/tasks-context'
+import { useEffect } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 
-export default function Tasks() {
+function TasksContent() {
+  const { tasks, loading, error, fetchTasks } = useTasks();
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
+
   return (
-    <TasksProvider>
+    <>
       <Header fixed>
         <Search />
         <div className='ml-auto flex items-center space-x-4'>
@@ -31,12 +38,31 @@ export default function Tasks() {
           </div>
           <TasksPrimaryButtons />
         </div>
+        
         <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-y-0 lg:space-x-12'>
-          <DataTable data={tasks} columns={columns} />
+          {loading ? (
+            <div className="space-y-2">
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+            </div>
+          ) : (
+            <DataTable data={tasks} columns={columns} />
+          )}
         </div>
       </Main>
 
       <TasksDialogs />
+    </>
+  );
+}
+
+export default function Tasks() {
+  return (
+    <TasksProvider>
+      <TasksContent />
     </TasksProvider>
-  )
+  );
 }

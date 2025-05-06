@@ -24,6 +24,8 @@ import {
 } from '@/components/ui/sheet'
 import { SelectDropdown } from '@/components/select-dropdown'
 import { Task } from '../data/schema'
+import { useTasks } from '../context/tasks-context'
+import { useEffect } from 'react'
 
 interface Props {
   open: boolean
@@ -41,6 +43,7 @@ type TasksForm = z.infer<typeof formSchema>
 
 export function TasksMutateDrawer({ open, onOpenChange, currentRow }: Props) {
   const isUpdate = !!currentRow
+  const { createTask, updateTask, fetchTasks } = useTasks()
 
   const form = useForm<TasksForm>({
     resolver: zodResolver(formSchema),
@@ -52,11 +55,25 @@ export function TasksMutateDrawer({ open, onOpenChange, currentRow }: Props) {
     },
   })
 
-  const onSubmit = (data: TasksForm) => {
-    // do something with the form data
+  useEffect(() => {
+    if (currentRow) {
+      form.reset(currentRow)
+    }
+  }, [currentRow, form])
+
+  const onSubmit = async (data: TasksForm) => {
     onOpenChange(false)
     form.reset()
-    showSubmittedData(data)
+    try {
+      if (isUpdate && currentRow) {
+        await updateTask(currentRow.id, data)
+      } else {
+        await createTask(data)
+      }
+      fetchTasks()
+    } catch (error) {
+      console.error(isUpdate ? 'Failed to update task' : 'Failed to create task', error)
+    }
   }
 
   return (
